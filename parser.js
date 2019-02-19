@@ -47,8 +47,9 @@ function getLoadFlags(content) {
   }
 }
 
-function getDependencyCommand(content, filePath, prefix) {
-  const baseRelativePath = path.join(prefix, path.relative('.', filePath));
+function getDependencyCommand(content, filePath, prefix, baseDir) {
+  baseDir = baseDir || '.';
+  const baseRelativePath = path.join(prefix, path.relative(baseDir, filePath));
   let provides = getProvides(content);
   if (!provides.length) {
     provides = [baseRelativePath];

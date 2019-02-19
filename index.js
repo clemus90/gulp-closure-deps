@@ -8,18 +8,22 @@ const parser = require('./parser.js');
 const PLUGIN_NAME = 'gulp-closure-deps';
 
 const cache = {};
-let cwd, prefix, baseDir;
+let cwd, prefix;
 
-let extractDependency = function(filePath, contents) {
-  return parser.getDependencyCommand(contents, filePath, prefix);
-};
+let extractDependencyFactory = function(baseDir) {
+  return function(filePath, contents) {
+    return parser.getDependencyCommand(contents, filePath, prefix, baseDir);
+  };
+}
 
 module.exports = function(opt) {
   opt = opt || {};
   prefix = opt.prefix || '';
-  baseDir = opt.baseDir || '';
+  const baseDir = opt.baseDir || '';
   let fileName = opt.fileName || 'deps.js';
   let files = [];
+
+  const extractDependency = extractDependencyFactory(baseDir);
 
   function bufferContents(file) {
     if (file.isNull()) return;
